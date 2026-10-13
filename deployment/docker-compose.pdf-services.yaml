@@ -1,0 +1,67 @@
+# Auxiliary services required by apps/demo4/workflow.dsl.yml.
+# Start together with docker-compose.yaml using the same project name:
+# docker compose -p dify -f docker-compose.yaml -f docker-compose.pdf-services.yaml up -d
+services:
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    container_name: gotenberg
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - default
+
+  pdf-bridge-inspect:
+    build:
+      context: ../services/pdf-bridge
+    image: dify-pdf-bridge:inspect-v2
+    container_name: dify-pdf-bridge-inspect-test-v2
+    restart: unless-stopped
+    environment:
+      OUTPUT_DIR: /data/output
+      GOTENBERG_URL: http://gotenberg:3000
+      PUBLIC_BASE_URL: http://localhost:8082
+    ports:
+      - "8082:8080"
+    networks:
+      - default
+
+  pdf-bridge-extract:
+    build:
+      context: ../services/pdf-bridge
+    image: dify-pdf-bridge:extract-v1
+    container_name: dify-pdf-bridge-extract-test
+    restart: unless-stopped
+    environment:
+      OUTPUT_DIR: /data/output
+      GOTENBERG_URL: http://gotenberg:3000
+      PUBLIC_BASE_URL: http://localhost:8083
+    ports:
+      - "8083:8080"
+    networks:
+      - default
+
+  pdf-navigation:
+    build:
+      context: ../services/pdf-navigation
+    image: dify-pdf-navigation:2026-10-12-v1
+    container_name: dify-pdf-navigation
+    restart: unless-stopped
+    environment:
+      GOTENBERG_URL: http://gotenberg:3000
+      PUBLIC_BASE_URL: http://localhost:8084
+      OUTPUT_DIR: /data/output
+    ports:
+      - "8084:8080"
+    volumes:
+      - navigation_pdfs:/data/output
+    networks:
+      - default
+
+volumes:
+  navigation_pdfs:
+
+networks:
+  default:
+    name: dify_default
+

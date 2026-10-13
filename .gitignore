@@ -1,0 +1,26 @@
+# Secrets and local runtime configuration
+.env
+.env.*
+!.env.example
+deployment/.env
+deployment/envs/**/*.env
+
+# Dify runtime data and generated files
+deployment/volumes/
+services/**/volumes/
+logs/
+uploads/
+backups/
+
+# Certificates and private keys
+**/*.key
+**/*.pem
+**/*.crt
+**/*.csr
+
+# Python and OS files
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+

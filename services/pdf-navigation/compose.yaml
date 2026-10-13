@@ -1,0 +1,15 @@
+services:
+  pdf-navigation:
+    build: .
+    container_name: dify-pdf-navigation
+    restart: unless-stopped
+    ports:
+      - "8084:8080"
+    environment:
+      GOTENBERG_URL: http://host.docker.internal:3000
+      PUBLIC_BASE_URL: http://localhost:8084
+      OUTPUT_DIR: /data/output
+    volumes:
+      - navigation_pdfs:/data/output
+volumes:
+  navigation_pdfs:
